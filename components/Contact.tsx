@@ -105,30 +105,32 @@ const Contact: React.FC = () => {
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-slate-700">Full Name</label>
                 <input 
-                  type="text" 
-                  name="name" 
-                  id="name" 
-                  value={formData.name} 
-                  onChange={handleChange} 
-                  required 
-                  className={getInputClassName('name')}
-              aria-invalid={errors.name ? "true" : "false"}
-                  aria-describedby={errors.name ? 'name-error' : undefined}
+          type="text" 
+          name="name" 
+          id="name" 
+          autoComplete="name"
+          value={formData.name} 
+          onChange={handleChange} 
+          required 
+          className={getInputClassName('name')}
+        aria-invalid={errors.name ? "true" : "false"}
+          aria-describedby={errors.name ? 'name-error' : undefined}
                 />
                 {errors.name && <p id="name-error" className="mt-1 text-sm text-error">{errors.name}</p>}
               </div>
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-slate-700">Phone</label>
                 <input 
-                  type="tel" 
-                  name="phone" 
-                  id="phone" 
-                  value={formData.phone} 
-                  onChange={handleChange} 
-                  required 
-                  className={getInputClassName('phone')}
-              aria-invalid={errors.phone ? "true" : "false"}
-                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+          type="tel" 
+          name="phone" 
+          id="phone" 
+          autoComplete="tel"
+          value={formData.phone} 
+          onChange={handleChange} 
+          required 
+          className={getInputClassName('phone')}
+        aria-invalid={errors.phone ? "true" : "false"}
+          aria-describedby={errors.phone ? 'phone-error' : undefined}
                 />
                 {errors.phone && <p id="phone-error" className="mt-1 text-sm text-error">{errors.phone}</p>}
               </div>
@@ -136,15 +138,16 @@ const Contact: React.FC = () => {
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email Address</label>
               <input 
-                type="email" 
-                name="email" 
-                id="email" 
-                value={formData.email} 
-                onChange={handleChange} 
-                required 
-                className={getInputClassName('email')}
-             aria-invalid={errors.email ? "true" : "false"}
-                aria-describedby={errors.email ? 'email-error' : undefined}
+           type="email" 
+           name="email" 
+           id="email" 
+           autoComplete="email"
+           value={formData.email} 
+           onChange={handleChange} 
+           required 
+           className={getInputClassName('email')}
+         aria-invalid={errors.email ? "true" : "false"}
+           aria-describedby={errors.email ? 'email-error' : undefined}
               />
               {errors.email && <p id="email-error" className="mt-1 text-sm text-error">{errors.email}</p>}
             </div>
