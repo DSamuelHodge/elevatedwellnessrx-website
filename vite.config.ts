@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   console.log('Vite mode:', mode);
   const env = loadEnv(mode, '.', '');
   return {
-    base: mode === 'development' ? '/' : '/elevatedwellnessrx-website/',
+    base: mode === 'development' ? '/' : 'https://dsamuelhodge.github.io/elevatedwellnessrx-website/',
     server: {
       port: 3000,
       host: '0.0.0.0',
