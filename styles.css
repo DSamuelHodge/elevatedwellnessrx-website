@@ -10,7 +10,8 @@ html {
 /* Custom utility to hide scrollbars */
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  /* scrollbar-width is only supported in Firefox and Chrome 121+ */
+  scrollbar-width: none;
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
