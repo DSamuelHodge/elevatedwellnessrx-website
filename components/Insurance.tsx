@@ -1,7 +1,7 @@
 import React from 'react';
 
 const insuranceProviders = [
-  { name: 'Medicaid', logoUrl: 'https://iili.io/KDYmqU7.jpg' },
+  { name: 'Medicaid', logoUrl: 'https://iili.io/KDhk70N.png' },
   { name: 'Anthem', logoUrl: 'https://cdn.worldvectorlogo.com/logos/anthem-inc-logo.svg' },
   { name: 'UnitedHealthcare', logoUrl: 'https://iili.io/KDa5ETF.png' },
   { name: 'Cigna', logoUrl: 'https://iili.io/KDa5Ghg.png' },
