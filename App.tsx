@@ -81,6 +81,12 @@ const App: React.FC = () => {
   const handleOpenTransferModal = () => setIsTransferModalOpen(true);
   const handleCloseTransferModal = () => setIsTransferModalOpen(false);
 
+    // Handler for Splash modal
+  const handleCloseSplashModal = () => {
+    sessionStorage.setItem('splashModalDismissed', 'true');
+    setIsSplashModalOpen(false);
+  };
+
   return (
     <div className="bg-pearl text-slate-600 font-sans">
       <Header navigateTo={navigateTo} onOpenRefillModal={handleOpenRefillModal} />
@@ -101,6 +107,7 @@ const App: React.FC = () => {
       <WaitlistModal isOpen={isWaitlistModalOpen} onClose={handleCloseWaitlistModal} />
       <HipaaModal isOpen={isHipaaModalOpen} onClose={handleCloseHipaaModal} />
       <RefillRequestModal isOpen={isRefillModalOpen} onClose={handleCloseRefillModal} />
+      <SplashModal isOpen={isSplashModalOpen} onClose={handleCloseSplashModal} />
       {/* Render the new TransferRequestModal */}
       <TransferRequestModal isOpen={isTransferModalOpen} onClose={handleCloseTransferModal} />
     </div>
