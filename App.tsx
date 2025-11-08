@@ -13,15 +13,28 @@ import WaitlistModal from './components/WaitlistModal';
 import HipaaModal from './components/HipaaModal';
 import RefillRequestModal from './components/RefillRequestModal';
 import TransferRequestModal from './components/TransferRequestModal'; // Import the new modal
+import SplashModal from './components/SplashModal'; // Import the new SplashModal
 
 const App: React.FC = () => {
   const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
   const [isHipaaModalOpen, setIsHipaaModalOpen] = useState(false);
   const [isRefillModalOpen, setIsRefillModalOpen] = useState(false);
+  const [isSplashModalOpen, setIsSplashModalOpen] = useState(false); // State for Splash modal
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false); // New state for Transfer modal
   const [page, setPage] = useState<'home' | 'about'>('home');
   const [scrollToAnchor, setScrollToAnchor] = useState<string | null>(null);
-
+  
+  useEffect(() => {
+  const hasDismissed = sessionStorage.getItem('splashModalDismissed');
+  if (!hasDismissed) {
+    // Add a small delay to allow the page to render first
+    const timer = setTimeout(() => {
+      setIsSplashModalOpen(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }
+}, []);
+  
   useEffect(() => {
     // This effect runs after the page state changes. If we've navigated to the home page
     // and an anchor is specified, it waits for the DOM to update and then scrolls.
