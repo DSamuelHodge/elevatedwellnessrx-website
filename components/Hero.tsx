@@ -10,7 +10,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenRefillModal, onOpenTransferModal }) =
     <section className="bg-cream">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
         <h1 className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tight">
-          West Columbus <span className="text-burgundy">Pharmacy</span> for Care, Prescriptions & Wellness
+          Elevated Wellness <span className="text-burgundy">Pharmacy</span> for Personalized Care, Prescriptions & Wellness
         </h1>
         <p className="mt-6 max-w-3xl mx-auto text-lg text-slate-600">
           Your local, independent pharmacy dedicated to personalized care. We offer fast, friendly service to help you manage your health with confidence.
