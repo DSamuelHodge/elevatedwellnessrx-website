@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @theme {
   --color-burgundy: #7A1E37;
   --color-burgundy-dark: #5C1529;

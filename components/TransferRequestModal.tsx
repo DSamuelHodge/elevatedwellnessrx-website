@@ -430,7 +430,7 @@ const TransferRequestModal: React.FC<TransferRequestModalProps> = ({ isOpen, onC
                 <input id="transfer-consent" name="consent" type="checkbox" checked={formData.consent} onChange={handleChange} required className={`focus:ring-burgundy h-4 w-4 text-burgundy rounded ${errors.consent ? 'border-red-500' : 'border-slate-300'}`} aria-invalid={errors.consent ? "true" : "false"} />
               </div>
               <div className="ml-3 text-sm">
-                <label htmlFor="transfer-consent" className="font-medium text-slate-700">I authorize Elevated Wellness Rx to transfer this prescription on my behalf.</label>
+                <label htmlFor="transfer-consent" className="font-medium text-slate-700">I authorize Complete Healthcare Rx to transfer this prescription on my behalf.</label>
               </div>
             </div>
             {errors.consent && <p id="transfer-consent-error" className="-mt-3 text-sm text-error">{errors.consent}</p>}
