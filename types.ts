@@ -50,3 +50,7 @@ export interface TransferFormData {
   transferRxRemark: string; // Optional reason for transfer
   consent: boolean;
 }
+
+export interface SplashModalFormData {
+  email: string;
+}
