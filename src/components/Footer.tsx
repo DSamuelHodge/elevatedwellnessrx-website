@@ -54,14 +54,12 @@ const Footer: React.FC<FooterProps> = ({ navigateTo, onOpenHipaaModal }) => {
               <li><a href="#contact" onClick={(e) => handleNavClick(e, '#contact')} className="transition-colors hover:text-rose-light">Contact Us</a></li>
             </ul>
           </nav>
-           <div>
             <h3 className="text-lg font-semibold text-white">Contact</h3>
             <ul className="mt-4 space-y-2 text-rose-mist/70">
               <li>1539 W Broad St Suite C, Columbus, OH 43222</li>
-              <li><a href="tel:614-370-1048" className="transition-colors hover:text-rose-light">(614) 370-1048</a></li>
-              <li><a href="mailto:support@completehealthcarepharmacy.com" className="transition-colors hover:text-rose-light">support@completehealthcarepharmacy.com</a></li>
+              <li><a href="tel:614-349-5140" className="transition-colors hover:text-rose-light">(614) 349-5140</a></li>
+              <li><a href="mailto:pharmacy@completehealthcarerx.com" className="transition-colors hover:text-rose-light">pharmacy@completehealthcarepharmacy.com</a></li>
             </ul>
-          </div>
         </div>
         <div className="mt-12 border-t border-slate-700 pt-8 text-center text-sm text-slate-500">
           <p>&copy; {currentYear} <span className="font-bold">Complete</span>Healthcare Rx. All Rights Reserved.</p>

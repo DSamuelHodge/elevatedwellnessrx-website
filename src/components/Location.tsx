@@ -22,14 +22,13 @@ const Location: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Phone</h3>
-                <a href="tel:614-370-1048" className="hover:text-burgundy transition-colors">(614) 370-1048</a>
+                <a href="tel:614-349-5140" className="hover:text-burgundy transition-colors">(614) 349-5140</a>
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Hours</h3>
                 <ul className="list-none">
-                  <li><span className="w-20 inline-block">Mon–Fri:</span> 9:00 AM – 6:00 PM</li>
-                  <li><span className="w-20 inline-block">Saturday:</span> 10:00 AM – 2:00 PM</li>
-                  <li><span className="w-20 inline-block">Sunday:</span> Closed</li>
+                  <li><span className="w-20 inline-block">Mon–Fri:</span> 8:30 AM – 4:30 PM</li>
+                  <li><span className="w-20 inline-block">Sat–Sun:</span> Closed</li>
                 </ul>
               </div>
             </div>
