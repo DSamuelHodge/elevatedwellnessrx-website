@@ -27,7 +27,7 @@ const AboutPage: React.FC = () => {
             <div className="md:col-span-1">
               <img 
                 src="https://iili.io/KDZtZib.png" 
-                alt="Nick Knight, Founder of Complete Healthcare Rx" 
+                alt="Nick Knight, CEO of Complete Healthcare Rx" 
                 className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]"
               />
             </div>
@@ -39,7 +39,7 @@ const AboutPage: React.FC = () => {
                 — Nick Knight
               </p>
               <p className="text-right text-slate-600">
-                Founder of Complete Healthcare Rx
+                CEO of Complete Healthcare Rx
               </p>
             </div>
           </div>

@@ -10,7 +10,7 @@ const testimonials = [
     avatarUrl: "https://iili.io/Ktj5Egf.jpg",
   },
   {
-    quote: "Switching to Elevated Wellness was the best decision. The med sync service has made managing my prescriptions so much easier.",
+    quote: "Switching to Complete Healthcare was the best decision. The med sync service has made managing my prescriptions so much easier.",
     name: "Michael B.",
     avatarUrl: "https://iili.io/Ktj5XbS.jpg",
   },
