@@ -31,6 +31,18 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, './src'),
       }
+    },
+    build: {
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
+            'form-vendor': ['react-hook-form', 'zod'],
+            'supabase-vendor': ['@supabase/supabase-js'],
+          }
+        }
+      }
     }
   };
 });
