@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import type { SplashModalFormData } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { SplashModalFormDataSchema } from '@/lib/schemas';
+import type { SplashModalFormData } from '@/lib/schemas';
+import { useSplashModalFormSubmission } from '@/lib/hooks';
+import { ZodError } from 'zod';
 import { XIcon } from './icons';
 
 interface SplashModalProps {
@@ -7,13 +10,15 @@ interface SplashModalProps {
   onClose: () => void;
 }
 
-type FormErrors = { [K in keyof SplashModalFormData]?: string };
+type FormErrors = Partial<Record<keyof SplashModalFormData, string>>;
 
 const SplashModal: React.FC<SplashModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<SplashModalFormData>({ email: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const { submit } = useSplashModalFormSubmission();
 
   useEffect(() => {
     if (!isOpen) {
@@ -21,6 +26,7 @@ const SplashModal: React.FC<SplashModalProps> = ({ isOpen, onClose }) => {
         setFormData({ email: '' });
         setStatus('idle');
         setErrors({});
+        setErrorMessage(null);
       }, 300); // match transition duration
     }
   }, [isOpen]);
@@ -34,17 +40,25 @@ const SplashModal: React.FC<SplashModalProps> = ({ isOpen, onClose }) => {
   };
 
   const validate = (): FormErrors => {
-    const newErrors: FormErrors = {};
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required.';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
+    try {
+      SplashModalFormDataSchema.parse(formData);
+      return {};
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: FormErrors = {};
+        error.errors.forEach(err => {
+          const path = err.path[0] as keyof SplashModalFormData;
+          newErrors[path] = err.message;
+        });
+        return newErrors;
+      }
+      return {};
     }
-    return newErrors;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null);
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -54,12 +68,13 @@ const SplashModal: React.FC<SplashModalProps> = ({ isOpen, onClose }) => {
     
     setStatus('submitting');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Mock API call
-      console.log('Splash Modal Opt-in:', formData);
+      await submit(formData);
       setStatus('success');
       setErrors({});
+      setErrorMessage(null);
     } catch (error) {
       setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
     }
   };
 
@@ -137,7 +152,7 @@ const SplashModal: React.FC<SplashModalProps> = ({ isOpen, onClose }) => {
                 <button type="submit" disabled={status === 'submitting'} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-base font-medium text-white bg-burgundy hover:bg-burgundy-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-burgundy disabled:bg-slate-400">
                   {status === 'submitting' ? 'Submitting...' : 'Notify Me'}
                 </button>
-                {status === 'error' && <p className="text-center text-sm text-error" aria-live="polite">Something went wrong. Please try again.</p>}
+                {status === 'error' && <p className="text-center text-sm text-error" aria-live="polite">{errorMessage}</p>}
                  <button
                     type="button"
                     onClick={onClose}

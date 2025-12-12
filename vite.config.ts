@@ -18,15 +18,18 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
     ],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.VITE_SUPABASE_URL': JSON.stringify(env.VITE_SUPABASE_URL),
+      'process.env.DATABASE_URL': JSON.stringify(env.DATABASE_URL),
+      'process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY': JSON.stringify(env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY),
+      'process.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(env.VITE_SUPABASE_ANON_KEY),
+      'process.env.BESTRX_API_KEY': JSON.stringify(env.BESTRX_API_KEY),
       'process.env.BESTRX_USERNAME': JSON.stringify(env.BESTRX_USERNAME),
       'process.env.BESTRX_PASSWORD': JSON.stringify(env.BESTRX_PASSWORD),
       'process.env.BESTRX_PHARMACY_NUMBER': JSON.stringify(env.BESTRX_PHARMACY_NUMBER)
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, './src'),
       }
     }
   };

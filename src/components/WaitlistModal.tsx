@@ -1,139 +1,16 @@
-
-
 import React, { useState, useEffect } from 'react';
-import type { WaitlistFormData, WaitlistEntry } from '../types';
+import { WaitlistFormDataSchema } from '@/lib/schemas';
+import type { WaitlistFormData } from '@/lib/schemas';
+import { useWaitlistFormSubmission } from '@/lib/hooks';
+import { ZodError } from 'zod';
 import { XIcon } from './icons';
-
-/**
- * RPM Waitlist Modal Component
- *
- * Collects user information for Remote Patient Monitoring service waitlist.
- * Uses localStorage-based JSON persistence for development/testing purposes.
- *
- * Features:
- * - Form validation with duplicate email prevention
- * - localStorage-based data persistence
- * - Automatic timestamp and ID generation
- * - Status tracking (active/contacted/enrolled)
- *
- * Development Utilities:
- * - Access via browser console: window.waitlistUtils
- * - window.waitlistUtils.getEntries() - Get all entries
- * - window.waitlistUtils.exportData() - Export as JSON string
- * - window.waitlistUtils.clearData() - Clear all data
- *
- * Data Structure:
- * {
- *   id: string,           // Auto-generated unique ID
- *   name: string,         // User's full name
- *   email: string,        // Email address (unique)
- *   phone: string,        // Phone number (optional)
- *   timestamp: string,    // ISO timestamp of signup
- *   status: 'active' | 'contacted' | 'enrolled'
- * }
- *
- * Note: This implementation uses localStorage for simplicity.
- * For production, consider a proper database backend with HIPAA compliance.
- */
-
-// Waitlist storage utilities
-const WAITLIST_STORAGE_KEY = 'elevated-wellness-waitlist';
-
-/**
- * Retrieves all waitlist entries from localStorage
- * @returns {WaitlistEntry[]} Array of waitlist entries
- */
-const getWaitlistEntries = (): WaitlistEntry[] => {
-  try {
-    const stored = localStorage.getItem(WAITLIST_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch (error) {
-    console.error('Error reading waitlist data:', error);
-    return [];
-  }
-};
-
-/**
- * Saves a new waitlist entry to localStorage with duplicate prevention
- * @param {Omit<WaitlistEntry, 'id' | 'timestamp' | 'status'>} entry - The form data to save
- * @returns {WaitlistEntry} The saved entry with generated metadata
- * @throws {Error} If email is already on waitlist or storage fails
- */
-const saveWaitlistEntry = (entry: Omit<WaitlistEntry, 'id' | 'timestamp' | 'status'>): WaitlistEntry | null => {
-  try {
-    const entries = getWaitlistEntries();
-    
-    // Check for duplicate email
-    const existingEntry = entries.find(e => e.email.toLowerCase() === entry.email.toLowerCase());
-    if (existingEntry) {
-      throw new Error('This email address is already on the waitlist.');
-    }
-    
-    // Create new entry
-    const newEntry: WaitlistEntry = {
-      ...entry,
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      status: 'active'
-    };
-    
-    // Save to storage
-    entries.push(newEntry);
-    localStorage.setItem(WAITLIST_STORAGE_KEY, JSON.stringify(entries));
-    
-    return newEntry;
-  } catch (error) {
-    console.error('Error saving waitlist entry:', error);
-    throw error;
-  }
-};
-
-/**
- * Checks if an email address is already on the waitlist
- * @param {string} email - Email address to check
- * @returns {boolean} True if email exists on waitlist
- */
-const isEmailOnWaitlist = (email: string): boolean => {
-  const entries = getWaitlistEntries();
-  return entries.some(entry => entry.email.toLowerCase() === email.toLowerCase());
-};
-
-/**
- * Exports all waitlist entries as JSON string (for development/debugging)
- * @returns {string} JSON string of all waitlist entries
- */
-const exportWaitlistData = (): string => {
-  const entries = getWaitlistEntries();
-  return JSON.stringify(entries, null, 2);
-};
-
-/**
- * Clears all waitlist data (for development/testing only)
- */
-const clearWaitlistData = (): void => {
-  try {
-    localStorage.removeItem(WAITLIST_STORAGE_KEY);
-    console.log('Waitlist data cleared');
-  } catch (error) {
-    console.error('Error clearing waitlist data:', error);
-  }
-};
-
-// Expose utility functions to window for development
-if (typeof window !== 'undefined') {
-  (window as any).waitlistUtils = {
-    getEntries: getWaitlistEntries,
-    exportData: exportWaitlistData,
-    clearData: clearWaitlistData
-  };
-}
 
 interface WaitlistModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type FormErrors = { [K in keyof WaitlistFormData]?: string };
+type FormErrors = Partial<Record<keyof WaitlistFormData, string>>;
 
 const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<WaitlistFormData>({
@@ -143,6 +20,8 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { submit } = useWaitlistFormSubmission();
 
   // Reset form when modal is closed
   useEffect(() => {
@@ -151,14 +30,11 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
         setFormData({ name: '', phone: '', email: '' });
         setStatus('idle');
         setErrors({});
+        setErrorMessage(null);
       }, 300); // match transition duration
     }
   }, [isOpen]);
 
-  /**
-   * Handles input field changes and clears validation errors for the changed field
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event
-   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -168,42 +44,23 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
     }
   };
   
-  /**
-   * Validates the waitlist form data including duplicate email checking
-   * @returns {FormErrors} Object containing validation error messages keyed by field name
-   */
   const validate = (): FormErrors => {
-    const newErrors: FormErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required.';
-    } else if (formData.name.trim().length > 100) {
-      newErrors.name = 'Full name cannot exceed 100 characters.';
+    try {
+      WaitlistFormDataSchema.parse(formData);
+      return {};
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: FormErrors = {};
+        error.errors.forEach(err => {
+          const path = err.path[0] as keyof WaitlistFormData;
+          newErrors[path] = err.message;
+        });
+        return newErrors;
+      }
+      return {};
     }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required.';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
-    } else if (isEmailOnWaitlist(formData.email)) {
-      newErrors.email = 'This email address is already on the waitlist.';
-    }
-
-    if (formData.phone.trim() && !/^\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/.test(formData.phone)) {
-        newErrors.phone = 'Please enter a valid phone number.';
-    }
-
-    return newErrors;
   };
 
-
-  /**
-   * Handles form submission for waitlist signup
-   *
-   * Validates form data, checks for duplicates, and saves to localStorage.
-   * Generates unique ID and timestamp for each entry.
-   *
-   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validationErrors = validate();
@@ -213,20 +70,15 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
     }
     
     setStatus('submitting');
+    setErrorMessage(null);
     try {
-      // Save to localStorage-based waitlist
-      const savedEntry = saveWaitlistEntry({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim()
-      });
-      
-      console.log('Waitlist entry saved:', savedEntry);
+      await submit(formData);
       setStatus('success');
       setErrors({});
+      setErrorMessage(null);
     } catch (error) {
-      console.error('Waitlist submission failed:', error);
       setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
     }
   };
 
@@ -330,7 +182,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                 {status === 'submitting' ? 'Submitting...' : 'Join Now'}
               </button>
             </div>
-            {status === 'error' && <p className="text-center text-sm text-error" aria-live="polite">Something went wrong. Please try again.</p>}
+            {status === 'error' && <p className="text-center text-sm text-error" aria-live="polite">{errorMessage}</p>}
           </form>
         )}
       </div>

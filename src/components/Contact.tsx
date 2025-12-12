@@ -1,9 +1,12 @@
 
 
 import React, { useState } from 'react';
-import type { ContactFormData } from '../types';
+import { ContactFormDataSchema } from '@/lib/schemas';
+import type { ContactFormData } from '@/lib/schemas';
+import { useContactFormSubmission } from '@/lib/hooks';
+import { ZodError } from 'zod';
 
-type FormErrors = { [K in keyof ContactFormData]?: string };
+type FormErrors = Partial<Record<keyof ContactFormData, string>>;
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -16,6 +19,8 @@ const Contact: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { submit } = useContactFormSubmission();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -31,34 +36,21 @@ const Contact: React.FC = () => {
   };
 
   const validate = (): FormErrors => {
-    const newErrors: FormErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Full name is required.';
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required.';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
+    try {
+      ContactFormDataSchema.parse(formData);
+      return {};
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: FormErrors = {};
+        error.errors.forEach(err => {
+          const path = err.path[0] as keyof ContactFormData;
+          newErrors[path] = err.message;
+        });
+        return newErrors;
+      }
+      return {};
     }
-    
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required.';
-    } else if (!/^(1\s?)?(\(\d{3}\)|\d{3})[\s.\-]?\d{3}[\s.\-]?\d{4}$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid US phone number.';
-    }
-
-    if (['new', 'transfer', 'refill'].includes(formData.reason) && !formData.message.trim()) {
-      newErrors.message = 'Please provide more details for your request.';
-    } else if (formData.message.trim().length > 500) {
-      newErrors.message = 'Message must be less than 500 characters.';
-    }
-
-    if (!formData.consent) {
-      newErrors.consent = 'You must acknowledge the statement to proceed.';
-    }
-
-    return newErrors;
   };
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,15 +61,16 @@ const Contact: React.FC = () => {
     }
 
     setStatus('submitting');
+    setErrorMessage(null);
     try {
-      // Mock API call - in a real app, this would be a fetch request
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form Submitted:', formData);
+      await submit(formData);
       setStatus('success');
       setErrors({});
+      setErrorMessage(null);
       setFormData({ name: '', phone: '', email: '', reason: 'general', message: '', consent: false });
     } catch (error) {
       setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to submit form');
     }
   };
 
@@ -208,7 +201,7 @@ const Contact: React.FC = () => {
               </button>
             </div>
             {status === 'success' && <p className="text-center text-success" aria-live="polite">Thank you! Your message has been sent.</p>}
-            {status === 'error' && <p className="text-center text-error" aria-live="polite">Something went wrong. Please try again.</p>}
+            {status === 'error' && <p className="text-center text-error" aria-live="polite">{errorMessage || 'Something went wrong. Please try again.'}</p>}
           </form>
         </div>
       </div>

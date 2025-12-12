@@ -18,15 +18,19 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
       ]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true
-  }
+  },
+  "include": ["src"]
 }

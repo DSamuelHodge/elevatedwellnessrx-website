@@ -36,10 +36,10 @@ const Footer: React.FC<FooterProps> = ({ navigateTo, onOpenHipaaModal }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           <div className="space-y-4">
-             <a href="/" onClick={handleHomeClick} className="flex items-center space-x-3" aria-label="Elevated Wellness Rx Home">
-              <img src="https://iili.io/Kt3A9Ns.md.png" alt="Elevated Wellness Rx Logo" className="h-10 w-auto rounded-md bg-white p-1" />
+             <a href="/" onClick={handleHomeClick} className="flex items-center space-x-3" aria-label="Complete Healthcare Rx Home">
+              <img src="https://iili.io/Kt3A9Ns.md.png" alt="Complete Healthcare Rx Logo" className="h-10 w-auto rounded-md bg-white p-1" />
               <span className="text-xl tracking-tight text-white">
-                <span className="font-bold">Elevated</span>Wellness Rx
+                <span className="font-bold">Complete</span>Healthcare Rx
               </span>
             </a>
             <p className="text-rose-mist/70">Your trusted partner in health and wellness in West Columbus.</p>
@@ -59,12 +59,12 @@ const Footer: React.FC<FooterProps> = ({ navigateTo, onOpenHipaaModal }) => {
             <ul className="mt-4 space-y-2 text-rose-mist/70">
               <li>1539 W Broad St Suite C, Columbus, OH 43222</li>
               <li><a href="tel:614-370-1048" className="transition-colors hover:text-rose-light">(614) 370-1048</a></li>
-              <li><a href="mailto:support@elevatedwellnessrx.com" className="transition-colors hover:text-rose-light">support@elevatedwellnessrx.com</a></li>
+              <li><a href="mailto:support@completehealthcarepharmacy.com" className="transition-colors hover:text-rose-light">support@completehealthcarepharmacy.com</a></li>
             </ul>
           </div>
         </div>
         <div className="mt-12 border-t border-slate-700 pt-8 text-center text-sm text-slate-500">
-          <p>&copy; {currentYear} <span className="font-bold">Elevated</span>Wellness Rx. All Rights Reserved.</p>
+          <p>&copy; {currentYear} <span className="font-bold">Complete</span>Healthcare Rx. All Rights Reserved.</p>
           <p className="mt-2"><a href="#privacy" onClick={(e) => e.preventDefault()} className="hover:text-rose-light">Privacy Policy</a> &middot; <a href="#hipaa" onClick={handleHipaaClick} className="hover:text-rose-light">HIPAA Notice</a></p>
         </div>
       </div>

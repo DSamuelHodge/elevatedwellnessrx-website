@@ -56,10 +56,10 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, onOpenRefillModal }) => {
     <header className="bg-pearl/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <a href="/" onClick={handleHomeClick} className="flex items-center space-x-3" aria-label="Elevated Wellness Rx Home">
-            <img src="https://iili.io/Kt3A9Ns.md.png" alt="Elevated Wellness Rx Logo" className="h-10 w-auto" />
+          <a href="/" onClick={handleHomeClick} className="flex items-center space-x-3" aria-label="Complete Healthcare Rx Home">
+            <img src="https://iili.io/f7esH8u.png" alt="Complete Healthcare Rx Logo" className="h-10 w-auto" />
             <span className="hidden md:inline text-xl text-slate-900 tracking-tight">
-              <span className="font-bold">Elevated</span>Wellness Rx
+              <span className="font-bold">Complete</span>Healthcare Rx
             </span>
           </a>
           <nav aria-label="Main navigation" className="hidden md:flex items-center">
